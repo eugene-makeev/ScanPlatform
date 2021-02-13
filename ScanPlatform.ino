@@ -28,13 +28,6 @@ Ssd1306Console  lcd;
 #error "Unknown font type"
 #endif
 
-
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
-#define NUMBER_OF_LINES (SCREEN_HEIGHT / FONT_HEIGH)
-#define NUMBER_OF_CHARS (SCREEN_WIDTH / FONT_WIDTH)
-
 // encoder
 #define ENCODER_BTN_PIN   (4)
 #define ENCODER_CLK_PIN   (2)
@@ -56,10 +49,10 @@ AccelStepper stepper(AccelStepper::FULL4WIRE, STEPPER_IN1_PIN, STEPPER_IN3_PIN, 
 
 #define SECONDS_PER_MINUTE (60)
 
-const char* LOGO_STR    ("3DScanPlatform");
-const char* VERSION_STR ("Version 1.0");
+const char* LOGO_STR    (" 3DScanPlatform");
+const char* VERSION_STR ("  Version  1.0");
 
-#define LOGO_DELAY          (0)
+#define LOGO_DELAY          (1500)
 #define SCAN_RESULT_DELAY   (1500)
 #define RESET_MENU_DELAY    (20000)
 
@@ -144,28 +137,6 @@ void save_settings(void)
     eeprom_write_block(&settings, SETTINGS_ADDRESS, sizeof (settings));
   }
 }
-
-//typedef enum
-//{
-//  ALIGN_LEFT,
-//  ALIGN_CENTER,
-//  ALIGN_RIGHT,
-//} line_align_t;
-//
-//void align_line(line_align_t pos)
-//{
-//  switch (pos)
-//  {
-//    case ALIGN_LEFT:
-//      break;
-//    case ALIGN_CENTER:
-//      break;
-//    case ALIGN_RIGHT:
-//      break;
-//    default:
-//      break;
-//  }
-//}
 
 void menuitem_handler(const int menuitem, const int _min, const int _max, const int _step, menu_callback cb)
 {
@@ -358,10 +329,12 @@ void setup()
   stepper.setMaxSpeed(PLATFORM_STEPS_PER_REVOLUTION * PLATFORM_RPM(settings.rpm) / SECONDS_PER_MINUTE);
   
 #if (LOGO_DELAY > 0)
+  lcd.setCursor(MENU_LINE_POS);
   lcd.print(LOGO_STR);
-  lcd.setCursor(0, FONT_HEIGH);
+  lcd.setCursor(0, 40);
   lcd.print(VERSION_STR);
   delay(LOGO_DELAY);
+  lcd.clear();
 #endif
 
   show_menu_entry(menu_entry);
